@@ -1,4 +1,4 @@
-# SimFlow
+# Simflow
 
 <p align="center">
   <img src="docs/assets/simflow-banner.png" alt="SimFlow banner" width="100%">
