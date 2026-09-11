@@ -21,7 +21,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
                 // Nothing needed yet
             }
         };
@@ -49,7 +49,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
                 // Nothing needed yet
             }
         };
@@ -62,7 +62,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
                 // Nothing needed yet
             }
         };
@@ -91,7 +91,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
             }
         };
 
@@ -103,7 +103,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
             }
         };
 
@@ -130,7 +130,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
             }
         };
 
@@ -142,7 +142,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
             }
         };
 
@@ -154,7 +154,7 @@ class SimulationEngineTest {
             }
 
             @Override
-            public void execute() {
+            public void execute(SimulationState state) {
             }
         };
 
@@ -172,6 +172,65 @@ class SimulationEngineTest {
         assertEquals(
                 1,
                 engine.pendingEventCount()
+        );
+    }
+
+    @Test
+    void eventCanChangeSimulationState() {
+
+        SimulationEngine engine = new SimulationEngine();
+
+        engine.state().setResource("coconuts", 100);
+
+        SimulationEvent growCoconuts = new ResourceChangeEvent(
+                Duration.ofHours(1),
+                "coconuts",
+                5
+        );
+
+        engine.schedule(growCoconuts);
+
+        engine.runNextEvent();
+
+        assertEquals(
+                105,
+                engine.state().getResource("coconuts")
+        );
+    }
+
+    @Test
+    void multipleEventsChangeResourceOverTime() {
+
+        SimulationEngine engine = new SimulationEngine();
+
+        engine.state().setResource("coconuts", 100);
+
+        engine.schedule(
+                new ResourceChangeEvent(
+                        Duration.ofHours(1),
+                        "coconuts",
+                        5
+                )
+        );
+
+        engine.schedule(
+                new ResourceChangeEvent(
+                        Duration.ofHours(2),
+                        "coconuts",
+                        -8
+                )
+        );
+
+        engine.runUntil(Duration.ofHours(2));
+
+        assertEquals(
+                97,
+                engine.state().getResource("coconuts")
+        );
+
+        assertEquals(
+                Duration.ofHours(2),
+                engine.currentTime()
         );
     }
 }

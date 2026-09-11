@@ -7,11 +7,18 @@ import java.util.Comparator;
 public class SimulationEngine {
     private final PriorityQueue<SimulationEvent> eventQueue;
     private Duration currentTime = Duration.ZERO;
+    private final SimulationState state;
 
     public SimulationEngine(){
         eventQueue = new PriorityQueue<>(
                 Comparator.comparing(SimulationEvent::scheduledTime)
         );
+
+        state = new SimulationState();
+    }
+
+    public SimulationState state(){
+        return state;
     }
 
     public void schedule(SimulationEvent event){
@@ -31,7 +38,7 @@ public class SimulationEngine {
 
         currentTime = nextEvent.scheduledTime();
 
-        nextEvent.execute();
+        nextEvent.execute(state);
     }
 
     public int pendingEventCount(){

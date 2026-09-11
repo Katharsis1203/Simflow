@@ -6,5 +6,5 @@ public interface SimulationEvent {
 
     Duration scheduledTime();
 
-    void execute();
+    void execute(SimulationState state);
 }
