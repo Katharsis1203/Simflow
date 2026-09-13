@@ -8,18 +8,44 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.github.katharsis1203.simflow.persistence.SimulationRunEntity;
+import io.github.katharsis1203.simflow.persistence.SimulationRunRepository;
 
+import java.time.Instant;
 @RestController
 @RequestMapping("/api/simulations")
 public class SimulationController {
 
-    private final SimulationRunner runner = new SimulationRunner();
+    private final SimulationRunner runner;
+    private final SimulationRunRepository runRepository;
+
+    public SimulationController(
+            SimulationRunner runner,
+            SimulationRunRepository runRepository
+    ) {
+        this.runner = runner;
+        this.runRepository = runRepository;
+    }
 
     @PostMapping
     public SimulationResult runSimulation(
-            @RequestBody SimulationConfig  config
-    ){
+            @RequestBody SimulationConfig config
+    ) {
+        Instant startedAt = Instant.now();
+
         SimulationEngine engine = runner.run(config);
+
+        SimulationRunEntity run = new SimulationRunEntity(
+                config.resourceName(),
+                config.initialAmount(),
+                config.productionPerHour(),
+                config.consumptionPerHour(),
+                config.durationHours(),
+                engine.state().getResource(config.resourceName()),
+                startedAt
+        );
+
+        runRepository.save(run);
 
         return new SimulationResult(
                 config.resourceName(),

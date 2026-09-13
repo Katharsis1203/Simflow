@@ -1,7 +1,8 @@
 package io.github.katharsis1203.simflow.simulation;
-
+import org.springframework.stereotype.Service;
 import java.time.Duration;
 
+@Service
 public class SimulationRunner {
 
     public SimulationEngine run(SimulationConfig config){
