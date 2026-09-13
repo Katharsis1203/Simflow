@@ -1,17 +1,21 @@
 package io.github.katharsis1203.simflow.api;
 
+import io.github.katharsis1203.simflow.persistence.SimulationRunEntity;
+import io.github.katharsis1203.simflow.persistence.SimulationRunRepository;
 import io.github.katharsis1203.simflow.simulation.SimulationConfig;
 import io.github.katharsis1203.simflow.simulation.SimulationEngine;
 import io.github.katharsis1203.simflow.simulation.SimulationResult;
 import io.github.katharsis1203.simflow.simulation.SimulationRunner;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.github.katharsis1203.simflow.persistence.SimulationRunEntity;
-import io.github.katharsis1203.simflow.persistence.SimulationRunRepository;
 
 import java.time.Instant;
+
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/simulations")
 public class SimulationController {
