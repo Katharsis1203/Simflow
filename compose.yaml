@@ -1,0 +1,18 @@
+
+services:
+    postgres:
+      image: postgres:18
+
+      environment:
+        POSTGRES_DB: simflow
+        POSTGRES_USER: simflow
+        POSTGRES_PASSWORD: simflow
+
+      ports:
+        - "5432:5432"
+
+      volumes:
+        - simflow_postgres_data:/var/lib/postgresql
+
+volumes:
+  simflow_postgres_data:
