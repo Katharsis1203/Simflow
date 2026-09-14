@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 type SimulationResult = {
     resourceName: String
@@ -6,6 +6,16 @@ type SimulationResult = {
     durationHours: number
 }
 
+type SimulationRun = {
+    id:number
+    resourceName: string
+    initialAmount: number
+    productionPerHour: number
+    consumptionPerHour: number
+    durationHours: number
+    finalAmount: number
+    startedAt: string
+}
 
 function App() {
     const [resourceName, setResourceName] = useState('coconuts')
@@ -14,6 +24,13 @@ function App() {
     const [consumptionPerHour, setConsumptionPerHour] = useState(8)
     const [durationHours, setDurationHours] = useState(24)
     const [result, setResult] = useState<SimulationResult | null>(null)
+    const [history, setHistory] = useState<SimulationRun[]>([])
+
+    useEffect(()=> {
+        fetch("http://localhost:8080/api/simulations")
+            .then((response) => response.json())
+            .then((data) => setHistory(data))
+    })
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -98,7 +115,24 @@ function App() {
                 </div>
             )}
 
-            <p>Current resource: {resourceName}</p>
+            <section>
+                <h2>Previous Simulations</h2>
+
+                {history.map((run)=> (
+                    <div key={run.id}>
+                        <strong>{run.resourceName} to {run.finalAmount}</strong>
+                        <p>
+                            {run.initialAmount} to {run.finalAmount}
+                        </p>
+                        <p>
+                            Production: {run.productionPerHour}/h
+                            Consumption: {run.consumptionPerHour}/h,
+                            Duration: {run.durationHours}h
+                        </p>
+                    </div>
+                ))}
+            </section>
+
         </main>
     )
 }
